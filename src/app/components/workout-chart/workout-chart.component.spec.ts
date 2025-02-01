@@ -26,8 +26,8 @@ describe('WorkoutChartComponent', () => {
       id: 1,
       name: 'Test User',
       workouts: [
-        { type: 'Running', minutes: 30 },
-        { type: 'Swimming', minutes: 45 }
+        { type: 'Health', minutes: 30 },
+        { type: 'Cardio', minutes: 45 }
       ]
     };
 
@@ -41,6 +41,8 @@ describe('WorkoutChartComponent', () => {
       }
     });
 
-    expect(component.barChartData.datasets[0].data).toEqual([30, 0, 45, 0]);
+    // The expected data array should match the order of workout types in the component
+    const expectedData = [30, 0, 0, 45, 0, 0]; // [Health, Energy, Endurance, Cardio, Strength, Flexibility]
+    expect(component.barChartData.datasets[0].data).toEqual(expectedData);
   });
 });
