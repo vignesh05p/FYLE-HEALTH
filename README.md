@@ -1,4 +1,23 @@
-# HealthPro
+# Health Challenge Tracker
+
+A web application for tracking user workouts and visualizing workout statistics.
+
+## Features
+
+- Add users with multiple workout sessions
+- Filter and search users
+- Interactive workout statistics visualization
+- Delete individual workouts
+- Responsive design
+- Data persistence using localStorage
+
+## Prerequisites
+
+- Node.js (v14 or higher)
+- npm (v6 or higher)
+- Angular CLI (v16.x)
+
+## Installation
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.5.
 
@@ -57,3 +76,7 @@ Angular CLI does not come with an end-to-end testing framework by default. You c
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
+## Developer
+
+Developed by [Vignesh](https://www.linkedin.com/in/vigneshprabhu11/)
