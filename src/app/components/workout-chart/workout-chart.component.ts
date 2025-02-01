@@ -11,23 +11,31 @@ export class WorkoutChartComponent implements OnChanges {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   @Input() user: User | null = null;
 
-  private colorMap = {
-    'Running': { bg: 'rgba(99, 102, 241, 0.5)', border: 'rgb(99, 102, 241)', hover: 'rgba(99, 102, 241, 0.7)' },
-    'Cycling': { bg: 'rgba(16, 185, 129, 0.5)', border: 'rgb(16, 185, 129)', hover: 'rgba(16, 185, 129, 0.7)' },
-    'Swimming': { bg: 'rgba(59, 130, 246, 0.5)', border: 'rgb(59, 130, 246)', hover: 'rgba(59, 130, 246, 0.7)' },
-    'Yoga': { bg: 'rgba(236, 72, 153, 0.5)', border: 'rgb(236, 72, 153)', hover: 'rgba(236, 72, 153, 0.7)' }
-  };
-
   public barChartData: ChartData<'bar'> = {
-    labels: [],
+    labels: ['Running', 'Cycling', 'Swimming', 'Yoga'],
     datasets: [{
-      data: [],
+      data: [0, 0, 0, 0],
       label: 'Minutes',
-      backgroundColor: [],
-      borderColor: [],
+      backgroundColor: [
+        'rgba(99, 102, 241, 0.5)',
+        'rgba(16, 185, 129, 0.5)',
+        'rgba(59, 130, 246, 0.5)',
+        'rgba(236, 72, 153, 0.5)'
+      ],
+      borderColor: [
+        'rgb(99, 102, 241)',
+        'rgb(16, 185, 129)',
+        'rgb(59, 130, 246)',
+        'rgb(236, 72, 153)'
+      ],
       borderWidth: 2,
       borderRadius: 8,
-      hoverBackgroundColor: []
+      hoverBackgroundColor: [
+        'rgba(99, 102, 241, 0.7)',
+        'rgba(16, 185, 129, 0.7)',
+        'rgba(59, 130, 246, 0.7)',
+        'rgba(236, 72, 153, 0.7)'
+      ]
     }]
   };
 
@@ -82,11 +90,8 @@ export class WorkoutChartComponent implements OnChanges {
         },
         ticks: {
           font: {
-            family: "'Inter', sans-serif",
-            size: 10
-          },
-          maxRotation: 45,
-          minRotation: 45
+            family: "'Inter', sans-serif"
+          }
         }
       }
     },
@@ -98,31 +103,19 @@ export class WorkoutChartComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['user'] && this.user) {
-      // Sort workouts by timestamp
-      const sortedWorkouts = [...this.user.workouts].sort((a, b) => 
-        new Date(a.timestamp!).getTime() - new Date(b.timestamp!).getTime()
-      );
+      const workoutTotals = new Map<string, number>();
+      
+      this.user.workouts.forEach(workout => {
+        const current = workoutTotals.get(workout.type) || 0;
+        workoutTotals.set(workout.type, current + workout.minutes);
+      });
 
-      // Update chart data
-      this.barChartData.labels = sortedWorkouts.map(w => 
-        `${w.type} (${new Date(w.timestamp!).toLocaleDateString()})`
-      );
-      
-      this.barChartData.datasets[0].data = sortedWorkouts.map(w => w.minutes);
-      
-      // Set colors based on workout type
-      this.barChartData.datasets[0].backgroundColor = sortedWorkouts.map(w => 
-        this.colorMap[w.type as keyof typeof this.colorMap].bg
-      );
-      this.barChartData.datasets[0].borderColor = sortedWorkouts.map(w => 
-        this.colorMap[w.type as keyof typeof this.colorMap].border
-      );
-      this.barChartData.datasets[0].hoverBackgroundColor = sortedWorkouts.map(w => 
-        this.colorMap[w.type as keyof typeof this.colorMap].hover
+      this.barChartData.datasets[0].data = this.barChartData.labels!.map(
+        label => workoutTotals.get(label as string) || 0
       );
 
       if (this.barChartOptions?.plugins?.title) {
-        this.barChartOptions.plugins.title.text = `Workout Sessions for ${this.user.name}`;
+        this.barChartOptions.plugins.title.text = `Workout Minutes for ${this.user.name}`;
       }
 
       this.chart?.update();
