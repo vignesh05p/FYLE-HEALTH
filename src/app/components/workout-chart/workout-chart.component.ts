@@ -3,6 +3,7 @@ import { ChartConfiguration, ChartData } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { User } from '../../interfaces/user.interface';
 
+// Workout statistics chart component
 @Component({
   selector: 'app-workout-chart',
   templateUrl: './workout-chart.component.html'
@@ -11,34 +12,42 @@ export class WorkoutChartComponent implements OnChanges {
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
   @Input() user: User | null = null;
 
+  // Chart configuration
   public barChartData: ChartData<'bar'> = {
-    labels: ['Running', 'Cycling', 'Swimming', 'Yoga'],
+    labels: [],
     datasets: [{
-      data: [0, 0, 0, 0],
+      data: [],
       label: 'Minutes',
       backgroundColor: [
-        'rgba(99, 102, 241, 0.5)',
-        'rgba(16, 185, 129, 0.5)',
-        'rgba(59, 130, 246, 0.5)',
-        'rgba(236, 72, 153, 0.5)'
+        'rgba(0, 200, 83, 0.5)',    // Health
+        'rgba(255, 87, 51, 0.5)',    // Energy
+        'rgba(66, 133, 244, 0.5)',   // Endurance
+        'rgba(241, 90, 141, 0.5)',   // Cardio
+        'rgba(255, 167, 38, 0.5)',   // Strength
+        'rgba(156, 39, 176, 0.5)'    // Flexibility
       ],
       borderColor: [
-        'rgb(99, 102, 241)',
-        'rgb(16, 185, 129)',
-        'rgb(59, 130, 246)',
-        'rgb(236, 72, 153)'
+        'rgb(0, 200, 83)',
+        'rgb(255, 87, 51)',
+        'rgb(66, 133, 244)',
+        'rgb(241, 90, 141)',
+        'rgb(255, 167, 38)',
+        'rgb(156, 39, 176)'
       ],
       borderWidth: 2,
       borderRadius: 8,
       hoverBackgroundColor: [
-        'rgba(99, 102, 241, 0.7)',
-        'rgba(16, 185, 129, 0.7)',
-        'rgba(59, 130, 246, 0.7)',
-        'rgba(236, 72, 153, 0.7)'
+        'rgba(0, 200, 83, 0.7)',
+        'rgba(255, 87, 51, 0.7)',
+        'rgba(66, 133, 244, 0.7)',
+        'rgba(241, 90, 141, 0.7)',
+        'rgba(255, 167, 38, 0.7)',
+        'rgba(156, 39, 176, 0.7)'
       ]
     }]
   };
 
+  // Chart styling options
   public barChartOptions: ChartConfiguration<'bar'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
@@ -101,24 +110,52 @@ export class WorkoutChartComponent implements OnChanges {
     }
   };
 
+  // Update chart when user changes
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['user'] && this.user) {
+    if (changes['user']) {
+      this.updateChartData();
+    }
+  }
+
+  private readonly workoutTypes = ['Health', 'Energy', 'Endurance', 'Cardio', 'Strength', 'Flexibility'];
+
+  private updateChartData(): void {
+    if (this.user && this.user.workouts) {
+      // Create a map to store totals for each workout type
       const workoutTotals = new Map<string, number>();
       
+      // Initialize all workout types with 0
+      this.workoutTypes.forEach(type => workoutTotals.set(type, 0));
+      
+      // Sum up minutes for each workout type
       this.user.workouts.forEach(workout => {
-        const current = workoutTotals.get(workout.type) || 0;
-        workoutTotals.set(workout.type, current + workout.minutes);
+        if (workoutTotals.has(workout.type)) {
+          workoutTotals.set(
+            workout.type, 
+            (workoutTotals.get(workout.type) || 0) + workout.minutes
+          );
+        }
       });
 
-      this.barChartData.datasets[0].data = this.barChartData.labels!.map(
-        label => workoutTotals.get(label as string) || 0
+      // Update chart data
+      this.barChartData.labels = this.workoutTypes;
+      this.barChartData.datasets[0].data = this.workoutTypes.map(type => 
+        workoutTotals.get(type) || 0
       );
 
       if (this.barChartOptions?.plugins?.title) {
         this.barChartOptions.plugins.title.text = `Workout Minutes for ${this.user.name}`;
       }
+    } else {
+      // Reset chart when user is null
+      this.barChartData.labels = [];
+      this.barChartData.datasets[0].data = [];
 
-      this.chart?.update();
+      if (this.barChartOptions?.plugins?.title) {
+        this.barChartOptions.plugins.title.text = 'Select a user to view statistics';
+      }
     }
+
+    this.chart?.update();
   }
 }
