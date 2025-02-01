@@ -21,6 +21,12 @@ A web application for tracking user workouts and visualizing workout statistics.
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.5.
 
+To install dependencies, run:
+
+```bash
+npm install --legacy-peer-deps
+```
+
 ## Development server
 
 To start a local development server, run:
