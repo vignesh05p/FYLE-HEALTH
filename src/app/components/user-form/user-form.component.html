@@ -1,0 +1,67 @@
+<form [formGroup]="userForm" (ngSubmit)="onSubmit()" class="space-y-6">
+  <div class="group">
+    <div class="relative">
+      <input
+        type="text"
+        formControlName="name"
+        placeholder="Enter user name"
+        class="w-full p-3 border border-gray-200 rounded-lg transition-all focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+        [class.border-red-500]="nameControl?.invalid && nameControl?.touched"
+      />
+      <span class="absolute right-2 top-3 text-sm text-gray-400">
+        {{ nameControl?.value?.length || 0 }}/30
+      </span>
+    </div>
+    <div *ngIf="nameControl?.invalid && nameControl?.touched" 
+         class="text-red-500 text-sm mt-1">
+      {{ nameErrorMessage }}
+    </div>
+  </div>
+
+  <div formArrayName="workouts" class="space-y-4">
+    <div *ngFor="let workout of workouts.controls; let i=index" [formGroupName]="i"
+         class="p-4 border border-gray-200 rounded-lg relative">
+      <button type="button" 
+              *ngIf="workouts.length > 1"
+              (click)="removeWorkout(i)"
+              class="absolute top-2 right-2 text-red-500 hover:text-red-700">
+        ❌
+      </button>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <select
+          formControlName="type"
+          class="w-full p-3 border border-gray-200 rounded-lg transition-all focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none appearance-none bg-white"
+        >
+          <option value="">Select workout type</option>
+          <option *ngFor="let type of workoutTypes" [value]="type">{{type}}</option>
+        </select>
+
+        <input
+          type="number"
+          formControlName="minutes"
+          placeholder="Duration in minutes"
+          class="w-full p-3 border border-gray-200 rounded-lg transition-all focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="flex justify-end">
+    <button
+      type="button"
+      (click)="addWorkout()"
+      class="px-4 py-2 text-indigo-600 hover:text-indigo-700 font-medium"
+    >
+      + Add Another Workout
+    </button>
+  </div>
+
+  <button
+    type="submit"
+    [disabled]="!userForm.valid || workouts.length === 0"
+    class="w-full bg-indigo-600 text-white p-3 rounded-lg font-medium transition-all hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed transform hover:scale-105 active:scale-95"
+  >
+    Save Workouts
+  </button>
+</form>

@@ -1,0 +1,99 @@
+<div class="space-y-6">
+  <div class="flex flex-col md:flex-row gap-4">
+    <div class="flex-1">
+      <input
+        [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilters()"
+        placeholder="🔍 Search by name"
+        class="w-full p-3 border border-gray-200 rounded-lg transition-all focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none"
+      />
+    </div>
+
+    <div class="flex-1">
+      <select
+        [(ngModel)]="selectedWorkoutType"
+        (ngModelChange)="applyFilters()"
+        class="w-full p-3 border border-gray-200 rounded-lg transition-all focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none appearance-none bg-white"
+      >
+        <option value="">All workout types</option>
+        <option *ngFor="let type of workoutTypes" [value]="type">
+          {{ type }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-lg overflow-hidden border border-gray-200">
+    <table class="w-full">
+      <thead>
+        <tr class="bg-gray-50 border-b border-gray-200">
+          <th class="p-4 text-left text-sm font-semibold text-gray-600">
+            User
+          </th>
+          <th class="p-4 text-left text-sm font-semibold text-gray-600">
+            Workouts
+          </th>
+          <th class="p-4 text-center text-sm font-semibold text-gray-600">
+            Total Minutes
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let user of paginatedUsers"
+          class="border-b border-gray-100 transition-colors hover:bg-indigo-50 cursor-pointer"
+          [class.bg-indigo-100]="user.id === selectedUserId"
+          (click)="selectUser(user)"
+        >
+          <td class="p-4 font-medium text-gray-800">{{ user.name }}</td>
+          <td class="p-4">
+            <div
+              *ngFor="let workout of user.workouts; let workoutIndex = index"
+              class="flex items-center justify-between py-1 group hover:bg-gray-50 rounded px-2"
+            >
+              <span class="text-gray-600">{{ workout.type }}</span>
+              <div class="flex items-center gap-2">
+                <button
+                  (click)="deleteWorkout($event, user.id, workoutIndex)"
+                  class="invisible group-hover:visible text-gray-400 hover:text-red-500 transition-all duration-200"
+                  title="Delete workout"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-5 w-5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </td>
+          <td class="p-4 font-semibold text-indigo-600 text-center">
+            {{ user.workouts | totalMinutes }} mins
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex justify-center gap-2">
+    <button
+      *ngFor="let page of [].constructor(totalPages); let i = index"
+      (click)="currentPage = i + 1"
+      [class.bg-indigo-600]="currentPage === i + 1"
+      [class.text-white]="currentPage === i + 1"
+      [class.hover:bg-indigo-700]="currentPage === i + 1"
+      class="px-4 py-2 rounded-lg border border-gray-200 transition-all hover:border-indigo-500 transform hover:scale-105 active:scale-95"
+    >
+      {{ i + 1 }}
+    </button>
+  </div>
+</div>

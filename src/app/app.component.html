@@ -1,0 +1,33 @@
+<div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-6">
+  <div class="container mx-auto">
+    <h1 class="text-4xl font-bold mb-8 text-indigo-900 text-center transition-all hover:scale-105">
+      🏃‍♂️ Health Challenge Tracker
+    </h1>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white rounded-xl shadow-lg transition-all hover:shadow-xl p-6">
+        <h2 class="text-2xl font-semibold mb-6 text-indigo-800">
+          ➕ Add New Workout
+        </h2>
+        <app-user-form></app-user-form>
+      </div>
+      
+      <div class="bg-white rounded-xl shadow-lg transition-all hover:shadow-xl p-6">
+        <h2 class="text-2xl font-semibold mb-6 text-indigo-800 flex items-center gap-2">
+          📊 
+          <span>
+            {{ selectedUser ? selectedUser.name + "'s Statistics" : 'Workout Statistics' }}
+          </span>
+        </h2>
+        <app-workout-chart [user]="selectedUser"></app-workout-chart>
+      </div>
+    </div>
+
+    <div class="mt-8 bg-white rounded-xl shadow-lg p-6">
+      <h2 class="text-2xl font-semibold mb-6 text-indigo-800">
+        👥 User Workouts
+      </h2>
+      <app-user-list (userSelected)="onUserSelected($event)"></app-user-list>
+    </div>
+  </div>
+</div>
