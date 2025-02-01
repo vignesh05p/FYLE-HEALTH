@@ -69,6 +69,8 @@ To execute unit tests with the [Karma](https://karma-runner.github.io) test runn
 ng test
 ```
 
+This project maintains 100% code coverage. After running the tests, you can view the code coverage report by opening the `coverage/index.html` file in your browser.
+
 ## Running end-to-end tests
 
 For end-to-end (e2e) testing, run:
@@ -78,6 +80,14 @@ ng e2e
 ```
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+
+## Screenshots
+
+### Home Page
+![Home Page](https://github.com/vignesh05p/FYLE-HEALTH/blob/main/src/app/assets/screenshots/home.png)
+
+### User Table
+![User Table](https://github.com/vignesh05p/FYLE-HEALTH/blob/main/src/app/assets/screenshots/table.png)
 
 ## Additional Resources
 
