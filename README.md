@@ -81,13 +81,8 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
-## Screenshots
 
-### Home Page
-![Home Page](https://github.com/vignesh05p/FYLE-HEALTH/blob/main/src/app/assets/screenshots/home.png)
 
-### User Table
-![User Table](https://github.com/vignesh05p/FYLE-HEALTH/blob/main/src/app/assets/screenshots/table.png)
 
 ## Additional Resources
 
